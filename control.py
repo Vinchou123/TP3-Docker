@@ -6,14 +6,17 @@ from datetime import datetime
 def get_file_properties(file_path):
     try:
         file_stats = os.stat(file_path)
+        
+        def format_date(timestamp):
+            return datetime.fromtimestamp(timestamp).strftime('%d %b %Y à %H:%M:%S')
 
         file_properties = {
             'nom': os.path.basename(file_path),
             'chemin': os.path.abspath(file_path),
             'taille': file_stats.st_size,
-            'date_creation': datetime.fromtimestamp(file_stats.st_ctime).isoformat(),
-            'date_modification': datetime.fromtimestamp(file_stats.st_mtime).isoformat(),
-            'date_dernier_acces': datetime.fromtimestamp(file_stats.st_atime).isoformat(),
+            'date_creation': format_date(file_stats.st_ctime),
+            'date_modification': format_date(file_stats.st_mtime),
+            'date_dernier_acces': format_date(file_stats.st_atime),
             'type': 'dossier' if stat.S_ISDIR(file_stats.st_mode) else 'fichier',
             'permissions': oct(file_stats.st_mode)[-3:],
             'proprietaire': file_stats.st_uid,  
