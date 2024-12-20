@@ -25,15 +25,20 @@ def get_file_properties(file_path):
         print(f"Le fichier '{file_path}' n'a pas été trouvé.")
         return None
 
-def save_properties_to_json(file_path, output_json):
-    file_properties = get_file_properties(file_path)
-    
-    if file_properties:
+def save_properties_to_json(file_paths, output_json):
+    all_properties = []
+
+    for file_path in file_paths:
+        file_properties = get_file_properties(file_path)
+        if file_properties:
+            all_properties.append(file_properties)
+
+    if all_properties:
         with open(output_json, 'w', encoding='utf-8') as json_file:
-            json.dump(file_properties, json_file, indent=4, ensure_ascii=False)
-        print(f"Les propriétés du fichier ont été sauvegardées dans '{output_json}'.")
+            json.dump(all_properties, json_file, indent=4, ensure_ascii=False)
+        print(f"Les propriétés des fichiers ont été sauvegardées dans '{output_json}'.")
 
-file_path = '/etc/ssh/sshd_config' 
-output_json = 'proprietes_shadow.json'
+file_paths = ['/etc/ssh/sshd_config', '/etc/shadow']
+output_json = 'proprietes_fichiers.json'
 
-save_properties_to_json(file_path, output_json)
+save_properties_to_json(file_paths, output_json)
