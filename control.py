@@ -5,10 +5,8 @@ from datetime import datetime
 
 def get_file_properties(file_path):
     try:
-        # Obtenir les propriétés du fichier
         file_stats = os.stat(file_path)
 
-        # Extraire les informations
         file_properties = {
             'nom': os.path.basename(file_path),
             'chemin': os.path.abspath(file_path),
@@ -18,8 +16,8 @@ def get_file_properties(file_path):
             'date_dernier_acces': datetime.fromtimestamp(file_stats.st_atime).isoformat(),
             'type': 'dossier' if stat.S_ISDIR(file_stats.st_mode) else 'fichier',
             'permissions': oct(file_stats.st_mode)[-3:],
-            'proprietaire': file_stats.st_uid,  # ID utilisateur du propriétaire
-            'groupe': file_stats.st_gid,        # ID du groupe
+            'proprietaire': file_stats.st_uid,  
+            'groupe': file_stats.st_gid,    
         }
 
         return file_properties
@@ -35,7 +33,7 @@ def save_properties_to_json(file_path, output_json):
             json.dump(file_properties, json_file, indent=4, ensure_ascii=False)
         print(f"Les propriétés du fichier ont été sauvegardées dans '{output_json}'.")
 
-file_path = '/etc/shadow' 
+file_path = '/etc/ssh/sshd_config' 
 output_json = 'proprietes_shadow.json'
 
 save_properties_to_json(file_path, output_json)
