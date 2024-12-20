@@ -23,15 +23,17 @@ def obtenir_proprietes_fichier(chemin_fichier):
         print(f"Le fichier '{chemin_fichier}' n'a pas été trouvé.")
         return None
 
-# Fonction pour vérifier si un fichier a changé
 def verifier_changements_fichier(chemin_fichier, proprietes_precedentes):
     proprietes_courantes = obtenir_proprietes_fichier(chemin_fichier)
     
     if not proprietes_courantes:
         return
 
-    # Vérifier les différences
-    if proprietes_precedentes and proprietes_courantes != proprietes_precedentes:
+    # Vérifier les différences sur tous les attributs
+    if proprietes_precedentes and (
+            proprietes_courantes['taille'] != proprietes_precedentes['taille'] or
+            proprietes_courantes['date_modification'] != proprietes_precedentes['date_modification'] or
+            proprietes_courantes['permissions'] != proprietes_precedentes['permissions']):
         print(f"Changement détecté dans le fichier '{chemin_fichier}'")
         print(f"Anciennes propriétés: {proprietes_precedentes}")
         print(f"Nouvelles propriétés: {proprietes_courantes}")
@@ -39,6 +41,7 @@ def verifier_changements_fichier(chemin_fichier, proprietes_precedentes):
         print(f"Aucun changement détecté dans le fichier '{chemin_fichier}'")
 
     return proprietes_courantes
+
 
 # Fonction pour charger la configuration depuis le fichier config.json
 def charger_configuration(fichier_config='config.json'):
