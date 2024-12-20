@@ -3,45 +3,66 @@ import stat
 import json
 from datetime import datetime
 
-def get_file_properties(file_path):
+def obtenir_proprietes_fichier(chemin_fichier):
     try:
-        file_stats = os.stat(file_path)
-        
-        def format_date(timestamp):
-            return datetime.fromtimestamp(timestamp).strftime('%d %b %Y à %H:%M:%S')
-
-        file_properties = {
-            'nom': os.path.basename(file_path),
-            'chemin': os.path.abspath(file_path),
-            'taille': file_stats.st_size,
-            'date_creation': format_date(file_stats.st_ctime),
-            'date_modification': format_date(file_stats.st_mtime),
-            'date_dernier_acces': format_date(file_stats.st_atime),
-            'type': 'dossier' if stat.S_ISDIR(file_stats.st_mode) else 'fichier',
-            'permissions': oct(file_stats.st_mode)[-3:],
-            'proprietaire': file_stats.st_uid,  
-            'groupe': file_stats.st_gid,    
+        stats_fichier = os.stat(chemin_fichier)
+        proprietes_fichier = {
+            'nom': os.path.basename(chemin_fichier),
+            'chemin': os.path.abspath(chemin_fichier),
+            'taille': stats_fichier.st_size,
+            'date_creation': datetime.fromtimestamp(stats_fichier.st_ctime).isoformat(),
+            'date_modification': datetime.fromtimestamp(stats_fichier.st_mtime).isoformat(),
+            'date_dernier_acces': datetime.fromtimestamp(stats_fichier.st_atime).isoformat(),
+            'type': 'dossier' if stat.S_ISDIR(stats_fichier.st_mode) else 'fichier',
+            'permissions': oct(stats_fichier.st_mode)[-3:],
+            'proprietaire': stats_fichier.st_uid,
+            'groupe': stats_fichier.st_gid,
         }
-
-        return file_properties
+        return proprietes_fichier
     except FileNotFoundError:
-        print(f"Le fichier '{file_path}' n'a pas été trouvé.")
+        print(f"Le fichier '{chemin_fichier}' n'a pas été trouvé.")
         return None
 
-def save_properties_to_json(file_paths, output_json):
-    all_properties = []
+# Fonction pour vérifier si un fichier a changé
+def verifier_changements_fichier(chemin_fichier, proprietes_precedentes):
+    proprietes_courantes = obtenir_proprietes_fichier(chemin_fichier)
+    
+    if not proprietes_courantes:
+        return
 
-    for file_path in file_paths:
-        file_properties = get_file_properties(file_path)
-        if file_properties:
-            all_properties.append(file_properties)
+    # Vérifier les différences
+    if proprietes_precedentes and proprietes_courantes != proprietes_precedentes:
+        print(f"Changement détecté dans le fichier '{chemin_fichier}'")
+        print(f"Anciennes propriétés: {proprietes_precedentes}")
+        print(f"Nouvelles propriétés: {proprietes_courantes}")
+    else:
+        print(f"Aucun changement détecté dans le fichier '{chemin_fichier}'")
 
-    if all_properties:
-        with open(output_json, 'w', encoding='utf-8') as json_file:
-            json.dump(all_properties, json_file, indent=4, ensure_ascii=False)
-        print(f"Les propriétés des fichiers ont été sauvegardées dans '{output_json}'.")
+    return proprietes_courantes
 
-file_paths = ['/etc/ssh/sshd_config', '/etc/shadow']
-output_json = 'proprietes_fichiers.json'
+# Fonction pour charger la configuration depuis le fichier config.json
+def charger_configuration(fichier_config='config.json'):
+    try:
+        with open(fichier_config, 'r', encoding='utf-8') as f:
+            configuration = json.load(f)
+        return configuration.get('fichiers_a_surveille', [])
+    except FileNotFoundError:
+        print(f"Le fichier de configuration '{fichier_config}' n'a pas été trouvé.")
+        return []
 
-save_properties_to_json(file_paths, output_json)
+# Charger les fichiers à surveiller depuis le fichier de configuration
+fichiers_a_surveiller = charger_configuration()
+
+cache_proprietes_fichiers = {}
+
+# Vérifier chaque fichier
+for fichier in fichiers_a_surveiller:
+    # Si le fichier a des propriétés précédentes dans le cache, les récupérer
+    proprietes_precedentes = cache_proprietes_fichiers.get(fichier)
+    
+    # Vérifier les changements pour le fichier
+    proprietes_courantes = verifier_changements_fichier(fichier, proprietes_precedentes)
+    
+    # Mettre à jour les propriétés dans le cache
+    if proprietes_courantes:
+        cache_proprietes_fichiers[fichier] = proprietes_courantes

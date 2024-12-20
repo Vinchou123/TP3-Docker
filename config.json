@@ -1,0 +1,10 @@
+{
+    "fichiers_a_surveille": [
+        "/etc/ssh/sshd_config",
+        "/etc/shadow",
+        "/etc/group",
+        "/etc/resolv.conf",
+        "/var/log/secure"
+
+    ]
+}
