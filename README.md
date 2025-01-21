@@ -4,6 +4,17 @@
 
 ### Installation
 
+Cloner mon [repo](https://github.com/Vinchou123/TP3-Docker.git) dans votre environnement de travail :
+```
+git clone https://github.com/Vinchou123/TP3-Docker.git
+```
+
+Déplacer vous dans le dossier :
+```
+cd TP3-Docker
+```
+
+
 #### Prérequis
 
 Avant d'installer l'outil, assurez-vous d'avoir Python 3 installé ainsi que les outils nécessaires à l'exécution du script.
@@ -39,16 +50,16 @@ sudo pip3 install tabulate
 Pour afficher les options disponibles, exécutez la commande suivante :
 
 ```
-python3 ids.py --help
+sudo python3 ids.py --help
 ```
-
+#### 
 Pour créer le fichier db.json en utilisant un fichier de configuration :
 ```
-python3 ids.py --build
+sudo python3 ids.py --build
 ```
 
 Pour vérifier l'état des fichiers par rapport à une base de données existante :
 ```
-python3 ids.py --check
+sudo python3 ids.py --check
 ```
 
