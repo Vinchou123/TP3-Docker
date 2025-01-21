@@ -64,7 +64,7 @@ def surveiller_repertoire(chemin_repertoire):
                 rapports_fichiers.append(rapport_fichier)
     return rapports_fichiers
 
-def charger_config(chemin_config='/etc/ids/config.json'):
+def charger_config(chemin_config='/home/vince/TP3-Docker/config.json'):
     if not os.path.exists(chemin_config):
         logging.error(f"Le fichier de configuration {chemin_config} est manquant.")
         return None
@@ -121,7 +121,6 @@ def principal():
         chemin_db = '/var/ids/db.json'
         with open(chemin_db, 'w') as f:
             json.dump(db, f, indent=4)
-
     elif '--check' in sys.argv:
         resultat = verifier_fichiers(fichiers, repertoires)
         print(json.dumps(resultat, indent=4))
