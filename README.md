@@ -45,14 +45,6 @@ sudo pip3 install tabulate
 
 ### Usage
 
-#### Aide
-
-Pour afficher les options disponibles, exécutez la commande suivante :
-
-```
-sudo python3 ids.py --help
-```
-#### 
 Pour créer le fichier db.json en utilisant un fichier de configuration :
 ```
 sudo python3 ids.py --build
@@ -63,3 +55,10 @@ Pour vérifier l'état des fichiers par rapport à une base de données existant
 sudo python3 ids.py --check
 ```
 
+#### Aide
+
+Pour afficher les options disponibles, exécutez la commande suivante :
+
+```
+sudo python3 ids.py --help
+```
