@@ -5,6 +5,7 @@ import time
 import logging
 from pathlib import Path
 import sys
+import argparse
 from colorama import Fore, Style
 from tabulate import tabulate
 
@@ -142,7 +143,14 @@ def verifier_fichiers(fichiers, repertoires, chemin_config='/home/vince/TP3-Dock
         return {"etat": "ok"}
 
 def principal():
-    config = charger_config()
+    parser = argparse.ArgumentParser(description='Outil de surveillance des fichiers et répertoires.')
+    parser.add_argument('--build', action='store_true', help='Construire la base de données')
+    parser.add_argument('--check', action='store_true', help='Vérifier les fichiers et répertoires')
+    parser.add_argument('--config', type=str, default='/home/vince/TP3-Docker/config.json', help='Chemin vers le fichier de configuration')
+
+    args = parser.parse_args()
+
+    config = charger_config(args.config)
 
     if not config:
         log_error("Échec du chargement de la configuration.")
@@ -151,11 +159,11 @@ def principal():
     fichiers = config['fichiers']
     repertoires = config['repertoires']
 
-    if '--build' in sys.argv:
+    if args.build:
         log_info("Création du fichier db.json.")
         db = creer_db(fichiers, repertoires)
 
-        chemin_config = '/home/vince/TP3-Docker/config.json'
+        chemin_config = args.config
         chemin_db = os.path.join(os.path.dirname(chemin_config), 'db.json')
 
         os.makedirs(os.path.dirname(chemin_db), exist_ok=True)
@@ -163,7 +171,7 @@ def principal():
         with open(chemin_db, 'w') as f:
             json.dump(db, f, indent=4)
         log_success(f"Base de données sauvegardée dans {chemin_db}.")
-    elif '--check' in sys.argv:
+    elif args.check:
         resultat = verifier_fichiers(fichiers, repertoires)
         
         print(Fore.CYAN + "Résultats de la vérification :\n" + Style.RESET_ALL)
