@@ -6,12 +6,17 @@ import logging
 from pathlib import Path
 import sys
 
-
 REPERTOIRE_LOGS = '/var/log/ids'
 FICHIER_LOG = f'{REPERTOIRE_LOGS}/ids.log'
+
 Path(REPERTOIRE_LOGS).mkdir(parents=True, exist_ok=True)
-logging.basicConfig(filename=FICHIER_LOG, level=logging.INFO, 
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+
+logging.basicConfig(
+    filename=FICHIER_LOG, 
+    level=logging.INFO, 
+    format='%(asctime)s - %(levelname)s - %(message)s', 
+    datefmt='%Y-%m-%dT%H:%M:%S' 
+)
 
 def calculer_hash(chemin_fichier):
     try:
@@ -23,6 +28,7 @@ def calculer_hash(chemin_fichier):
                 hash_sha512.update(bloc_octets)
                 hash_sha256.update(bloc_octets)
                 hash_md5.update(bloc_octets)
+        logging.info(f"Calcul des hash pour {chemin_fichier} réussi.")
         return {
             'sha512': hash_sha512.hexdigest(),
             'sha256': hash_sha256.hexdigest(),
@@ -35,6 +41,7 @@ def calculer_hash(chemin_fichier):
 def obtenir_infos_fichier(chemin_fichier):
     try:
         stats = os.stat(chemin_fichier)
+        logging.info(f"Informations sur {chemin_fichier} obtenues avec succès.")
         return {
             'dernier_changement': time.ctime(stats.st_mtime),
             'date_creation': time.ctime(stats.st_ctime),
@@ -72,6 +79,7 @@ def charger_config(chemin_config='/home/vince/TP3-Docker/config.json'):
         return None
 
     with open(chemin_config, 'r') as f:
+        logging.info(f"Chargement du fichier de configuration {chemin_config}.")
         return json.load(f)
 
 def creer_db(fichiers, repertoires):
@@ -88,6 +96,7 @@ def creer_db(fichiers, repertoires):
         fichiers_repertoire = surveiller_repertoire(repertoire)
         db['fichiers'].extend(fichiers_repertoire)
     
+    logging.info("Base de données créée.")
     return db
 
 def verifier_fichiers(fichiers, repertoires, chemin_config='/home/vince/TP3-Docker/config.json'):
@@ -108,7 +117,6 @@ def verifier_fichiers(fichiers, repertoires, chemin_config='/home/vince/TP3-Dock
     else:
         logging.info("Aucun changement détecté.")
         return {"etat": "ok"}
-
 
 def principal():
     config = charger_config()
@@ -131,9 +139,11 @@ def principal():
         
         with open(chemin_db, 'w') as f:
             json.dump(db, f, indent=4)
+        logging.info(f"Base de données sauvegardée dans {chemin_db}.")
     elif '--check' in sys.argv:
         resultat = verifier_fichiers(fichiers, repertoires)
         print(json.dumps(resultat, indent=4))
+        logging.info(f"Résultats de la vérification : {json.dumps(resultat, indent=4)}")
 
 
 if __name__ == '__main__':
