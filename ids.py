@@ -90,7 +90,9 @@ def creer_db(fichiers, repertoires):
     
     return db
 
-def verifier_fichiers(fichiers, repertoires, chemin_db='/var/ids/db.json'):
+def verifier_fichiers(fichiers, repertoires, chemin_config='/home/vince/TP3-Docker/config.json'):
+    chemin_db = os.path.join(os.path.dirname(chemin_config), 'db.json')
+    
     if not os.path.exists(chemin_db):
         logging.error(f"Le fichier {chemin_db} est manquant.")
         return None
@@ -107,6 +109,7 @@ def verifier_fichiers(fichiers, repertoires, chemin_db='/var/ids/db.json'):
         logging.info("Aucun changement détecté.")
         return {"etat": "ok"}
 
+
 def principal():
     config = charger_config()
 
@@ -120,12 +123,18 @@ def principal():
     if '--build' in sys.argv:
         logging.info("Création du fichier db.json.")
         db = creer_db(fichiers, repertoires)
-        chemin_db = '/var/ids/db.json'
+
+        chemin_config = '/home/vince/TP3-Docker/config.json'
+        chemin_db = os.path.join(os.path.dirname(chemin_config), 'db.json')
+
+        os.makedirs(os.path.dirname(chemin_db), exist_ok=True)
+        
         with open(chemin_db, 'w') as f:
             json.dump(db, f, indent=4)
     elif '--check' in sys.argv:
         resultat = verifier_fichiers(fichiers, repertoires)
         print(json.dumps(resultat, indent=4))
+
 
 if __name__ == '__main__':
     principal()
