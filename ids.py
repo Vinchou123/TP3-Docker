@@ -97,11 +97,12 @@ def surveiller_repertoire(chemin_repertoire):
                 rapports_fichiers.append(rapport_fichier)
     return rapports_fichiers
 
-def charger_config(chemin_config='/home/vince/TP3-Docker/config.json'):
+def charger_config(chemin_config='/var/ids/config.json'):
     if not os.path.exists(chemin_config):
         log_error(f"Le fichier de configuration {chemin_config} est manquant.")
         return None
 
+    log_info(f"Chargement du fichier de configuration à partir de : {chemin_config}")
     with open(chemin_config, 'r') as f:
         log_success(f"Chargement du fichier de configuration {chemin_config}.")
         return json.load(f)
@@ -110,67 +111,81 @@ def creer_db(fichiers, repertoires):
     db = {}
     db['temps_de_creation'] = time.ctime()
     db['fichiers'] = []
+
+    log_info("Création de la base de données. Surveiller les fichiers et répertoires.")
     
     for fichier in fichiers:
+        log_info(f"Surveillance du fichier : {fichier}")
         infos_fichier = surveiller_fichier(fichier)
         if infos_fichier:
             db['fichiers'].append({'chemin': fichier, 'infos': infos_fichier})
     
     for repertoire in repertoires:
+        log_info(f"Surveillance du répertoire : {repertoire}")
         fichiers_repertoire = surveiller_repertoire(repertoire)
         db['fichiers'].extend(fichiers_repertoire)
     
-    log_success("Base de données créée.")
+    log_success("Base de données créée avec succès.")
+    
+    chemin_db = '/var/ids/db.json'
+    os.makedirs(os.path.dirname(chemin_db), exist_ok=True)
+
+    with open(chemin_db, 'w') as f:
+        json.dump(db, f, indent=4)
+    log_success(f"Base de données sauvegardée dans {chemin_db}.")
     return db
 
-def verifier_fichiers(fichiers, repertoires, chemin_config='/home/vince/TP3-Docker/config.json'):
-    chemin_db = os.path.join(os.path.dirname(chemin_config), 'db.json')
+def verifier_fichiers(fichiers, repertoires):
+    chemin_db = '/var/ids/db.json'
     
     if not os.path.exists(chemin_db):
         log_error(f"Le fichier {chemin_db} est manquant.")
         return None
 
+    log_info(f"Vérification des fichiers avec le fichier de base de données à : {chemin_db}")
+    
     with open(chemin_db, 'r') as f:
         db = json.load(f)
 
     db_actuel = creer_db(fichiers, repertoires)
 
     if db['temps_de_creation'] != db_actuel['temps_de_creation']:
-        log_info("L'état des fichiers a changé.")
+        log_info(f"Changements détectés dans l'état des fichiers. Vérification du fichier de base : {chemin_db}")
         return {"etat": "divergent", "changements": db_actuel['fichiers']}
     else:
-        log_info("Aucun changement détecté.")
+        log_info(f"Aucun changement détecté dans l'état des fichiers. Vérification avec {chemin_db}.")
         return {"etat": "ok"}
 
 def principal():
-    parser = argparse.ArgumentParser(description='AIde commande outil de surveillance de fichier')
+    parser = argparse.ArgumentParser(description='Outil de surveillance de fichier')
     parser.add_argument('--build', action='store_true', help='Construire la base de données')
     parser.add_argument('--check', action='store_true', help='Vérifier les fichiers')
 
     args = parser.parse_args()
 
-    config = charger_config(args.config)
-
-    if not config:
-        log_error("Échec du chargement de la configuration.")
-        return
-
-    fichiers = config['fichiers']
-    repertoires = config['repertoires']
-
     if args.build:
-        log_info("Création du fichier db.json.")
-        db = creer_db(fichiers, repertoires)
-
-        chemin_config = args.config
-        chemin_db = os.path.join(os.path.dirname(chemin_config), 'db.json')
-
-        os.makedirs(os.path.dirname(chemin_db), exist_ok=True)
+        log_info("Commande 'build' appelée pour créer la base de données.")
+        config = charger_config('/var/ids/config.json')
         
-        with open(chemin_db, 'w') as f:
-            json.dump(db, f, indent=4)
-        log_success(f"Base de données sauvegardée dans {chemin_db}.")
+        if not config:
+            log_error("Échec du chargement de la configuration.")
+            return
+
+        fichiers = config['fichiers']
+        repertoires = config['repertoires']
+        log_info("Création du fichier db.json.")
+        creer_db(fichiers, repertoires)
+    
     elif args.check:
+        log_info("Commande 'check' appelée pour vérifier l'état des fichiers.")
+        config = charger_config('/var/ids/config.json')
+        
+        if not config:
+            log_error("Échec du chargement de la configuration.")
+            return
+
+        fichiers = config['fichiers']
+        repertoires = config['repertoires']
         resultat = verifier_fichiers(fichiers, repertoires)
         
         print(Fore.CYAN + "Résultats de la vérification :\n" + Style.RESET_ALL)
