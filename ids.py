@@ -143,10 +143,9 @@ def verifier_fichiers(fichiers, repertoires, chemin_config='/home/vince/TP3-Dock
         return {"etat": "ok"}
 
 def principal():
-    parser = argparse.ArgumentParser(description='Outil de surveillance des fichiers et répertoires.')
+    parser = argparse.ArgumentParser(description='AIde commande outil de surveillance de fichier')
     parser.add_argument('--build', action='store_true', help='Construire la base de données')
-    parser.add_argument('--check', action='store_true', help='Vérifier les fichiers et répertoires')
-    parser.add_argument('--config', type=str, default='/home/vince/TP3-Docker/config.json', help='Chemin vers le fichier de configuration')
+    parser.add_argument('--check', action='store_true', help='Vérifier les fichiers')
 
     args = parser.parse_args()
 
