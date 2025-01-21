@@ -1,10 +1,5 @@
 {
-    "fichiers_a_surveille": [
-        "/etc/ssh/sshd_config",
-        "/etc/shadow",
-        "/etc/group",
-        "/etc/resolv.conf",
-        "/var/log/secure"
-
-    ]
+    "fichiers": ["/etc/passwd", "/etc/shadow", "/etc/ssh/sshd_config"],
+    "repertoires": ["/var/www"],
+    "surveillance_ports": true
 }
