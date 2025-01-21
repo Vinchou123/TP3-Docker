@@ -4,6 +4,8 @@ import hashlib
 import time
 import logging
 from pathlib import Path
+import sys
+
 
 REPERTOIRE_LOGS = '/var/log/ids'
 FICHIER_LOG = f'{REPERTOIRE_LOGS}/ids.log'
