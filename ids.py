@@ -97,7 +97,7 @@ def surveiller_repertoire(chemin_repertoire):
                 rapports_fichiers.append(rapport_fichier)
     return rapports_fichiers
 
-def charger_config(chemin_config='/var/ids/config.json'):
+def charger_config(chemin_config='config.json'):
     if not os.path.exists(chemin_config):
         log_error(f"Le fichier de configuration {chemin_config} est manquant.")
         return None
@@ -165,7 +165,7 @@ def principal():
 
     if args.build:
         log_info("Commande 'build' appelée pour créer la base de données.")
-        config = charger_config('/var/ids/config.json')
+        config = charger_config('config.json')
         
         if not config:
             log_error("Échec du chargement de la configuration.")
@@ -178,7 +178,8 @@ def principal():
     
     elif args.check:
         log_info("Commande 'check' appelée pour vérifier l'état des fichiers.")
-        config = charger_config('/var/ids/config.json')
+        config = charger_config('config.json')
+    
         
         if not config:
             log_error("Échec du chargement de la configuration.")
