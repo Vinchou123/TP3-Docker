@@ -104,17 +104,17 @@ def monitor_active_processes():
     return
 
 def main():
-    print("Options disponibles :")
-    print("1. Afficher l'utilisation des partitions")
-    print("2. Afficher la consommation de mémoire vive (RAM)")
-    print("3. Afficher la température et la santé du matériel")
-    print("4. Scanner les ports ouverts sur la machine")
-    print("5. Afficher les utilisateurs connectés")
-    print("6. Afficher l'historique des connexions")
-    print("7. Surveiller l'état des containers Docker")
-    print("8. Surveiller les ports en écoute")
-    print("9. Surveiller les connexions réseau actives")
-    print("10. Surveiller les processus actifs")
+    print("Entrer le chiffre pour afficher :")
+    print("1. L'utilisation des partitions")
+    print("2. La consommation de mémoire vive (RAM)")
+    print("3. La température et la santé du matériel")
+    print("4. Les ports ouverts sur la machine")
+    print("5. Les utilisateurs connectés")
+    print("6. L'historique des connexions")
+    print("7. L'état des containers Docker")
+    print("8. Les ports en écoute")
+    print("9. Les connexions réseau actives")
+    print("10. Les processus actifs")
     print("11. Quitter")
 
     while True:
