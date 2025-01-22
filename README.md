@@ -148,4 +148,19 @@ sudo systemctl list-timers --all
 
 
 
+## Bonus
 
+Le script Python bonus.py permet de surveiller différents aspects du système, tels que l'utilisation du disque, la mémoire vive (RAM), la température matérielle, les ports ouverts, les utilisateurs connectés, l'historique des connexions, les containers Docker, les ports en écoute, les connexions réseau actives et les processus actifs.
+
+### Fonctionnalités
+
+Utilisation des partitions : Affiche l'utilisation actuelle des partitions de disque.  
+Consommation de mémoire vive (RAM) : Affiche l'utilisation de la RAM en temps réel.  
+Température et santé du matériel : Affiche les informations de température matérielle (nécessite lm_sensors).  
+Ports ouverts sur la machine : Scanne et affiche les ports ouverts sur la machine.  
+Utilisateurs connectés : Affiche la liste des utilisateurs actuellement connectés.  
+Historique des connexions : Affiche l'historique des connexions récentes.  
+État des containers Docker : Affiche l'état des containers Docker actifs.  
+Ports en écoute : Affiche les ports réseau actuellement en écoute.  
+Connexions réseau actives : Affiche les connexions réseau établies.  
+Processus actifs : Affiche les processus actuellement en cours d'exécution.  
