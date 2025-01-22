@@ -164,3 +164,35 @@ Historique des connexions : Affiche l'historique des connexions récentes.
 Ports en écoute : Affiche les ports réseau actuellement en écoute.  
 Connexions réseau actives : Affiche les connexions réseau établies.  
 Processus actifs : Affiche les processus actuellement en cours d'exécution.  
+
+
+### Utilisation
+
+Assurez-vous que les outils nécessaires comme psutil, sensors, nmap, docker sont installés sur votre système pour bénéficier de toutes les fonctionnalités du script.
+
+Le script utilise la bibliothèque Python psutil pour récupérer des informations sur le système. Vous pouvez l'installer avec la commande suivante :
+```
+pip install psutil
+```
+
+Pour récupérer les informations de température du matériel, le script utilise l'outil sensors. Si ce n'est pas déjà installé, vous pouvez l'installer avec :
+```
+sudo dnf install lm_sensors
+```
+
+Le script utilise nmap pour scanner les ports ouverts. Si ce n'est pas déjà installé, vous pouvez l'installer avec :
+```
+sudo dnf install nmap
+```
+
+Le script peut surveiller l'état des containers Docker. Pour cela, vous devez avoir Docker installé. Si Docker n'est pas encore installé, vous pouvez le faire avec :
+```
+sudo dnf install docker
+```
+
+Une fois ces outils installés, vous pourrez lancer le script avec :
+```
+python3 bonus.py
+```
+
+Ps: sans oublier d'être dans le répertoire du script.
