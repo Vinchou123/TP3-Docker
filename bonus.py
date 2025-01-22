@@ -40,14 +40,14 @@ def scan_open_ports():
     print("\n--- Ports ouverts sur la machine ---")
     if check_tool_installed("nmap"):
         try:
-            nmap_output = subprocess.check_output(["nmap", "-sS", "localhost"], text=True)
+            nmap_output = subprocess.check_output(["sudo", "nmap", "-sS", "localhost"], text=True)
             print(nmap_output)
         except subprocess.CalledProcessError as e:
             print(f"Erreur lors de l'exécution de nmap : {e}")
     else:
         print("nmap n'est pas installé. Installez-le avec 'sudo dnf install nmap'.")
-    print("-" * 40)
-    return
+        return
+
 
 def monitor_connected_users():
     print("\n--- Utilisateurs connectés ---")
