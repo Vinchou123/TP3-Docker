@@ -1,0 +1,15 @@
+[Unit]
+Description=Surveillance de fichiers et répertoires avec IDS
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/vince/TP3-Docker/ids.py --build
+WorkingDirectory=/home/vince/TP3-Docker
+Restart=on-failure
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=ids
+
+[Install]
+WantedBy=multi-user.target

@@ -151,10 +151,10 @@ def verifier_fichiers(fichiers, repertoires):
 
     if db['temps_de_creation'] != db_actuel['temps_de_creation']:
         log_info(f"Changements détectés dans l'état des fichiers. Vérification du fichier de base : {chemin_db}")
-        return {"etat": "divergent", "changements": db_actuel['fichiers']}
+        return {"state": "divergent", "changements": db_actuel['fichiers']}
     else:
         log_info(f"Aucun changement détecté dans l'état des fichiers. Vérification avec {chemin_db}.")
-        return {"etat": "ok"}
+        return {"state": "ok"}
 
 def principal():
     parser = argparse.ArgumentParser(description='Outil de surveillance de fichier')

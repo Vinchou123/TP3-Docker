@@ -1,0 +1,10 @@
+[Unit]
+Description=Lancer le service IDS à intervalles réguliers
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=15min
+Persistent=False
+
+[Install]
+WantedBy=timers.target
